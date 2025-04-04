@@ -1,11 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-.dark * {
-  & {
-    /* Add your custom styles here */
-  }
-}
+@custom-variant dark (&:is(.dark *));
 
 :root {
   --radius: 0.625rem;
