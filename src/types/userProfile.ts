@@ -6,3 +6,4 @@ export interface UserProfile {
     familyDetails: string;
     email: string;
   }
+  

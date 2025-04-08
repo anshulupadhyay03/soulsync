@@ -11,7 +11,7 @@ const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [profileCreated, setProfileCreated] = useState(false);
 
-  /* useEffect(() => {
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setIsAuthenticated(true);
@@ -26,7 +26,7 @@ const App: React.FC = () => {
       }
     });
     return () => unsubscribe();
-  }, []); */
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
