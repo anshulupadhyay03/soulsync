@@ -11,9 +11,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useProfileStore } from "../data/profileStore";
+import { useState } from "react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Define the schema for Step 3
 const formSchema = z.object({
@@ -30,9 +31,9 @@ const formSchema = z.object({
   monthlyIncome: z.string().optional(),
 });
 
-export function Step3() {
+export function Step3({ onProfileCreated }: { onProfileCreated: () => void }) {
   const { profileData, setProfileData, prevStep, saveToFirebase } = useProfileStore();
-
+  const [isLoading, setIsLoading] = useState(false); // Loading state
   // Initialize the form with default values from the store
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -48,12 +49,21 @@ export function Step3() {
       monthlyIncome: profileData.monthlyIncome || "",
     },
   });
-
+ 
   // Handle form submission
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setProfileData(values);
-    await saveToFirebase();
-    // Optionally redirect to dashboard after saving
+    console.log("Form submitted with values:", values);
+    setIsLoading(true); // Set loading state to true
+    try {
+      setProfileData(values);
+      await saveToFirebase();
+      setIsLoading(false);
+      onProfileCreated(); // Notify parent component that the profile has been created
+    } catch (error) {
+      console.error("Error saving profile:", error);
+    } finally {
+      setIsLoading(false); // Set loading state to false
+    }
   }
 
   return (
@@ -277,14 +287,15 @@ export function Step3() {
 
         {/* Navigation Buttons */}
         <div className="flex justify-between">
-          <Button type="button" variant="outline" onClick={prevStep}>
+          <Button type="button" variant="outline" onClick={prevStep} disabled={isLoading}>
             Back
           </Button>
-          <Button type="submit" className="bg-cyan-500 hover:bg-cyan-600">
-            Create Profile
+          <Button type="submit" className="bg-cyan-500 hover:bg-cyan-600" disabled={isLoading}>
+            {isLoading ? "Creating..." : "Create Profile"}
           </Button>
         </div>
       </form>
     </Form>
   );
 }
+// Removed conflicting local declaration of useState

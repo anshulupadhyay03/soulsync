@@ -55,8 +55,8 @@ export const useProfileStore = create<ProfileState>((storeSet) => ({
   prevStep: () => storeSet((state) => ({ step: state.step - 1 })),
   saveToFirebase: async () => {
     const user = auth.currentUser;
-    console.log('Saving to Firebase:', user);
     if (user) {
+      console.log("Saving profile to Firebase...");
       const userRef = ref(database, `profile/${user.uid}`);
       const profileData = useProfileStore.getState().profileData;
       await set(userRef, { ...profileData, uid: user.uid, email: user.email });

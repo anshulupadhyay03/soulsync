@@ -10,7 +10,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -38,10 +37,10 @@ export function Step2() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       city: profileData.city || "",
-      livesWithFamily: profileData.livesWithFamily || "Yes",
+      livesWithFamily: profileData.livesWithFamily || "",
       familyCity: profileData.familyCity || "",
       maritalStatus: profileData.maritalStatus || "",
-      diet: profileData.diet || "Veg",
+      diet: profileData.diet || "",
       height: profileData.height || "",
       subCommunity: profileData.subCommunity || "",
       partnerCommunityPreference: profileData.partnerCommunityPreference || false,

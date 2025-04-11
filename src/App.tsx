@@ -15,7 +15,7 @@ const App: React.FC = () => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setIsAuthenticated(true);
-        const userRef = ref(database, `users/${user.uid}`);
+        const userRef = ref(database, `profile/${user.uid}`);
         const snapshot = await get(userRef);
         if (snapshot.exists()) {
           setProfileCreated(true);
@@ -33,7 +33,10 @@ const App: React.FC = () => {
       {!isAuthenticated ? (
         <Auth onAuthSuccess={() => setIsAuthenticated(true)} />
       ) : !profileCreated ? (
-        <ProfileForm onProfileCreated={() => setProfileCreated(true)} />
+        <ProfileForm onProfileCreated={() => {
+          setProfileCreated(true);
+          console.log("Profile created successfully");
+        }} />
       ) : (
         <ProfileList />
       )}

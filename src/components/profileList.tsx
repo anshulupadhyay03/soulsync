@@ -7,7 +7,7 @@ const ProfileList: React.FC = () => {
   const [profiles, setProfiles] = useState<UserProfile[]>([]);
 
   useEffect(() => {
-    const profilesRef = ref(database, 'users');
+    const profilesRef = ref(database, 'profile');
     onValue(profilesRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {

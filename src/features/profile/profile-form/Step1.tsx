@@ -186,8 +186,8 @@ export function Step1() {
             </FormItem>
           )}
         />
-        <div className="flex justify-end">
-          <Button type="submit">Next</Button>
+        <div className="flex justify-center">
+          <Button type="submit" className="bg-cyan-500 hover:bg-cyan-600">Continue</Button>
         </div>
       </form>
     </Form>
