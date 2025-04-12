@@ -2,6 +2,10 @@ import React from "react";
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../firebase/firebaseConfig";
 import { Button } from "@/components/ui/button";
+import {
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable"
 
 const Auth: React.FC<{ onAuthSuccess: () => void }> = ({ onAuthSuccess }) => {
   const signInWithGoogle = async () => {
@@ -14,24 +18,29 @@ const Auth: React.FC<{ onAuthSuccess: () => void }> = ({ onAuthSuccess }) => {
   };
 
   return (
-    <div className="flex h-screen flex-row">
-      {/* Left Side */}
-      <div
-        className="w-full h-full bg-cover bg-center flex flex-col justify-center items-center text-white"
-        style={{
-          backgroundImage: `url('/images/login/marriage1.jpg')`, // Background image URL
-        }}
-      >
-        <h1 className="text-5xl font-bold mb-4">Soul Sync</h1>
-        <p className="text-lg text-center px-8">
-          Soul Sync makes partner search easy with the help of our elders and
-          people who you trust.
-        </p>
-      </div>
-
-      {/* Right Side */}
-      <div className="w-5/12 flex flex-col justify-center items-center bg-gray-100">
-        <div className="w-10/12 max-w-md p-6 bg-white rounded-lg shadow-md">
+    <ResizablePanelGroup
+      direction="horizontal"
+      className="h-screen w-screen flex"
+    >
+      <ResizablePanel defaultSize={70}>
+        <div
+          className="w-full h-full bg-cover bg-center flex flex-col justify-center items-center text-white"
+          style={{
+            backgroundImage: `url('/images/login/marriage1.jpg')`, // Background image URL
+            height: "100vh", // Ensure full height
+          }}
+        >
+            <div className="absolute top-0 w-full text-center mt-8">
+            <h1 className="text-5xl font-bold mb-4 text-white">Soul Sync</h1>
+            <p className="text-lg px-8 text-white mb-4">
+              Soul Sync makes partner search easy with the help of our elders and
+              people who you trust.
+            </p>
+            </div>
+        </div>
+      </ResizablePanel>
+      <ResizablePanel defaultSize={30}>
+        <div className="w-10/12 max-w-md p-6 bg-white rounded-lg shadow-md h-full flex flex-col justify-center items-center mx-auto m-4">
           <h2 className="text-2xl font-semibold mb-6 text-center">
             Welcome to Soul Sync
           </h2>
@@ -42,8 +51,8 @@ const Auth: React.FC<{ onAuthSuccess: () => void }> = ({ onAuthSuccess }) => {
             Login with Google
           </Button>
         </div>
-      </div>
-    </div>
+      </ResizablePanel>
+    </ResizablePanelGroup>
   );
 };
 
