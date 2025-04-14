@@ -56,7 +56,6 @@ export function Step2() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-md space-y-6">
-        <h2 className="text-2xl font-bold mb-4">Let's create your Profile now</h2>
 
         {/* City you live in */}
         <FormField

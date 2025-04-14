@@ -6,6 +6,7 @@ import ProfileForm from './components/profileForm';
 import ProfileList from './components/profileList';
 import { ref, get } from 'firebase/database';
 import { database } from './firebase/firebaseConfig';
+import ParentLayout from './components/layout';
 
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -29,18 +30,18 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {!isAuthenticated ? (
-        <Auth onAuthSuccess={() => setIsAuthenticated(true)} />
-      ) : !profileCreated ? (
-        <ProfileForm onProfileCreated={() => {
-          setProfileCreated(true);
-          console.log("Profile created successfully");
-        }} />
-      ) : (
+    !isAuthenticated ? (
+      <Auth onAuthSuccess={() => setIsAuthenticated(true)} />
+    ) : !profileCreated ? (
+      <ProfileForm onProfileCreated={() => {
+        setProfileCreated(true);
+        console.log("Profile created successfully");
+      }} />
+    ) : (
+      <ParentLayout>
         <ProfileList />
-      )}
-    </div>
+      </ParentLayout>
+    )
   );
 };
 

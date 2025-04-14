@@ -1,12 +1,13 @@
 import React from "react";
 import { MultiStepForm } from "@/features/profile/profile-form/MultiStepForm";
+import ParentLayout from "./layout";
 
 function ProfileForm({ onProfileCreated }: { onProfileCreated: () => void }) {
   return (
-    <>
-      <h2 className="text-2xl font-bold mb-6 justify-self-center">Let's create your profile</h2>
+    <ParentLayout>
+      <h2 className="text-2xl font-bold mb-6 py-5 text-center">Let's create your profile</h2>
       <MultiStepForm onProfileCreated={onProfileCreated} />
-    </>
+    </ParentLayout>
   );
 }
 

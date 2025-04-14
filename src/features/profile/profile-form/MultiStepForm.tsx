@@ -7,9 +7,9 @@ export function MultiStepForm({ onProfileCreated }: { onProfileCreated: () => vo
   const { step } = useProfileStore();
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-teal-400">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="w-full max-w-md p-6 m-8 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-6">Create Your Profile - Step {step}</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center text-cyan-500">Step {step}</h2>
         {step === 1 && <Step1 />}
         {step === 2 && <Step2 />}
         {step === 3 && <Step3 onProfileCreated={onProfileCreated} />}
