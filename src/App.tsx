@@ -3,7 +3,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase/firebaseConfig';
 import Auth from './components/Auth';
 import ProfileForm from './components/profileForm';
-import ProfileList from './components/profileList';
+import ProfileList from './features/profile_list/profileList';
 import { ref, get } from 'firebase/database';
 import { database } from './firebase/firebaseConfig';
 import ParentLayout from './components/layout';

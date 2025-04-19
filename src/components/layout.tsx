@@ -6,7 +6,7 @@ const ParentLayout = ({children}:PropsWithChildren) => {
   return (
     <div className="flex flex-col min-h-screen">
    <Header/>
-      <main className='min-h-screen container mx-auto flex flex-col justify-center'>
+      <main className='min-h-screen container mx-auto justify-center'>
         {children}
       </main>
       <Footer />
