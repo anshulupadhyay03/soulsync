@@ -11,7 +11,7 @@ import { Bell, Crown, HelpCircle, Search as SearchIcon } from 'lucide-react'; //
 
 const Header: React.FC = () => {
   return (
-    <header className="sticky top-0 bg-cyan-900 text-white p-4 flex justify-between items-center z-50 shadow-md">
+    <header className="sticky top-0 bg-white text-black p-4 flex justify-between items-center z-50 shadow-md">
       {/* Logo */}
       <div className="flex items-center">
         <img
