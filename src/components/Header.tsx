@@ -1,4 +1,7 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase/firebaseConfig';
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,6 +13,18 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bell, Crown, HelpCircle, Search as SearchIcon } from 'lucide-react'; // For icons
 
 const Header: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth); // Sign out the user
+      navigate('/login'); // Redirect to the login page
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
+
+
   return (
     <header className="sticky top-0 bg-white text-black p-4 flex justify-between items-center z-50 shadow-md">
       {/* Logo */}
@@ -66,7 +81,7 @@ const Header: React.FC = () => {
           <DropdownMenuContent>
             <DropdownMenuItem>My Profile</DropdownMenuItem>
             <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Logout</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
