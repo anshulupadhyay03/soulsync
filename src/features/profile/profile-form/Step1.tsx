@@ -13,6 +13,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useProfileStore } from "../data/profileStore";
+import { Country, State, City } from "country-state-city"; // Import the library
+import { useState } from "react";
 
 const formSchema = z.object({
   firstName: z.string().min(2, { message: "First Name must be at least 2 characters." }),
@@ -31,6 +33,10 @@ export function Step1() {
     resolver: zodResolver(formSchema),
     defaultValues: profileData,
   });
+
+
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [selectedState, setSelectedState] = useState<string | null>(null);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setProfileData(values);
@@ -85,25 +91,29 @@ export function Step1() {
               </Select>
               <FormMessage />
             </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="dob"
-          render={({ field }) => (
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="dob"
+            render={({ field }) => (
             <FormItem>
               <FormLabel>Date of Birth</FormLabel>
-              <FormControl>
-                <Input type="date" {...field} />
-              </FormControl>
+                <FormControl>
+                <Input
+                  type="date"
+                  {...field}
+                  className="w-fit"
+                />
+                </FormControl>
               <FormMessage />
             </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="religion"
-          render={({ field }) => (
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="religion"
+            render={({ field }) => (
             <FormItem>
               <FormLabel>Religion</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -123,71 +133,107 @@ export function Step1() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="city"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>City</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select city" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="City1">City 1</SelectItem>
-                  <SelectItem value="City2">City 2</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="state"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>State</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select state" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="State1">State 1</SelectItem>
-                  <SelectItem value="State2">State 2</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="country"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Country</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select country" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="Country1">Country 1</SelectItem>
-                  <SelectItem value="Country2">Country 2</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="flex space-x-4">
+          {/* Country */}
+          <FormField
+            control={form.control}
+            name="country"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+          <FormLabel>Country</FormLabel>
+          <Select
+            onValueChange={(value) => {
+              field.onChange(value);
+              setSelectedCountry(value); // Update selected country
+              setSelectedState(null); // Reset state when country changes
+            }}
+            defaultValue={field.value}
+          >
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue placeholder="Select country" />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              {Country.getAllCountries().map((country) => (
+                <SelectItem key={country.isoCode} value={country.isoCode}>
+            {country.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* State */}
+          <FormField
+            control={form.control}
+            name="state"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+          <FormLabel>State</FormLabel>
+          <Select
+            onValueChange={(value) => {
+              field.onChange(value);
+              setSelectedState(value); // Update selected state
+            }}
+            defaultValue={field.value}
+            disabled={!selectedCountry} // Disable if no country is selected
+          >
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue placeholder="Select state" />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              {selectedCountry &&
+                State.getStatesOfCountry(selectedCountry).map((state) => (
+            <SelectItem key={state.isoCode} value={state.isoCode}>
+              {state.name}
+            </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
+          <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* City */}
+          <FormField
+            control={form.control}
+            name="city"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+          <FormLabel>City</FormLabel>
+          <Select
+            onValueChange={field.onChange}
+            defaultValue={field.value}
+            disabled={!selectedState} // Disable if no state is selected
+          >
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue placeholder="Select city" />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              {selectedState &&
+                City.getCitiesOfState(selectedCountry || "", selectedState).map((city) => (
+            <SelectItem key={city.name} value={city.name}>
+              {city.name}
+            </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
+          <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <div className="flex justify-center">
-          <Button type="submit" className="bg-cyan-500 hover:bg-cyan-600">Continue</Button>
+          <Button type="submit" className="bg-primary hover:bg-primary-hover">Continue</Button>
         </div>
       </form>
     </Form>

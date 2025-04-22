@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { Country, State, City } from "country-state-city"; // Import the library
 import {
   Form,
   FormControl,
@@ -14,12 +15,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useProfileStore } from "../data/profileStore";
+import { useState } from "react";
 
 // Define the schema for Step 2
 const formSchema = z.object({
-  city: z.string().nonempty({ message: "Please select the city you live in." }),
   livesWithFamily: z.enum(["Yes", "No"], { message: "Please select if you live with your family." }),
-  familyCity: z.string().optional(),
+  familyCity: z.string().nonempty({ message: "Please select a city." }),
+  familyState: z.string().nonempty({ message: "Please select a state." }),
+  familyCountry: z.string().nonempty({ message: "Please select a country." }),
   maritalStatus: z.string().nonempty({ message: "Please select your marital status." }),
   diet: z.enum(["Veg", "Non-Veg", "Occasionally Non-Veg", "Eggetarian", "Jain", "Vegan"], {
     message: "Please select your diet preference.",
@@ -29,18 +32,26 @@ const formSchema = z.object({
   partnerCommunityPreference: z.boolean().optional(),
 });
 
+
 export function Step2() {
   const { profileData, setProfileData, nextStep, prevStep } = useProfileStore();
-
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [selectedState, setSelectedState] = useState<string | null>(null);
+  
   // Initialize the form with default values from the store
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      city: profileData.city || "",
-      livesWithFamily: profileData.livesWithFamily || "",
+      livesWithFamily: profileData.livesWithFamily === "Yes" || profileData.livesWithFamily === "No"
+  ? profileData.livesWithFamily
+  : undefined,
+      familyCountry: profileData.familyCity || "",
+      familyState: profileData.familyCity || "",
       familyCity: profileData.familyCity || "",
       maritalStatus: profileData.maritalStatus || "",
-      diet: profileData.diet || "",
+      diet: (["Veg", "Non-Veg", "Occasionally Non-Veg", "Eggetarian", "Jain", "Vegan"] as const).includes(profileData.diet as any)
+        ? (profileData.diet as "Veg" | "Non-Veg" | "Occasionally Non-Veg" | "Eggetarian" | "Jain" | "Vegan")
+        : undefined,
       height: profileData.height || "",
       subCommunity: profileData.subCommunity || "",
       partnerCommunityPreference: profileData.partnerCommunityPreference || false,
@@ -56,29 +67,6 @@ export function Step2() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-md space-y-6">
-
-        {/* City you live in */}
-        <FormField
-          control={form.control}
-          name="city"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>City you live in *</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select city" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="City1">City 1</SelectItem>
-                  <SelectItem value="City2">City 2</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
         {/* You live with your family? */}
         <FormField
@@ -112,28 +100,113 @@ export function Step2() {
           )}
         />
 
-        {/* City your family lives in */}
-        <FormField
-          control={form.control}
-          name="familyCity"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>City your family lives in? *</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select city" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="City1">City 1</SelectItem>
-                  <SelectItem value="City2">City 2</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {/* Address your family lives in */}
+        {/* Country */}
+        {form.watch("livesWithFamily") === "No" && (
+          <div>
+            <span className="text-sm font-semibold">Where does your family live?</span>
+            <div className="flex space-x-4 py-2">
+            {/* Country */}
+            <FormField
+              control={form.control}
+              name="familyCountry"
+              render={({ field }) => (
+          <FormItem className="flex-1">
+            <FormLabel>Country</FormLabel>
+            <Select
+              onValueChange={(value) => {
+                field.onChange(value);
+                setSelectedCountry(value); // Update selected country
+                setSelectedState(null); // Reset state when country changes
+              }}
+              defaultValue={field.value}
+            >
+              <FormControl>
+                <SelectTrigger>
+            <SelectValue placeholder="Select country" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {Country.getAllCountries().map((country) => (
+            <SelectItem key={country.isoCode} value={country.isoCode}>
+              {country.name}
+            </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+              )}
+            />
+
+            {/* State */}
+            <FormField
+              control={form.control}
+              name="familyState"
+              render={({ field }) => (
+          <FormItem className="flex-1">
+            <FormLabel>State</FormLabel>
+            <Select
+              onValueChange={(value) => {
+                field.onChange(value);
+                setSelectedState(value); // Update selected state
+              }}
+              defaultValue={field.value}
+              disabled={!selectedCountry} // Disable if no country is selected
+            >
+              <FormControl>
+                <SelectTrigger>
+            <SelectValue placeholder="Select state" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {selectedCountry &&
+            State.getStatesOfCountry(selectedCountry).map((state) => (
+              <SelectItem key={state.isoCode} value={state.isoCode}>
+                {state.name}
+              </SelectItem>
+            ))}
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+              )}
+            />
+
+            {/* City */}
+            <FormField
+              control={form.control}
+              name="familyCity"
+              render={({ field }) => (
+          <FormItem className="flex-1">
+            <FormLabel>City</FormLabel>
+            <Select
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+              disabled={!selectedState} // Disable if no state is selected
+            >
+              <FormControl>
+                <SelectTrigger>
+            <SelectValue placeholder="Select city" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {selectedState &&
+            City.getCitiesOfState(selectedCountry || "", selectedState).map((city) => (
+              <SelectItem key={city.name} value={city.name}>
+                {city.name}
+              </SelectItem>
+            ))}
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+              )}
+            />
+          </div>
+          </div>
+          
+        )}
 
         {/* Marital Status */}
         <FormField

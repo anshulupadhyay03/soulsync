@@ -7,8 +7,8 @@ export function MultiStepForm({ onProfileCreated }: { onProfileCreated: () => vo
   const { step } = useProfileStore();
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="w-full max-w-md p-6 m-8 bg-white rounded-lg shadow-md">
+    <div className="flex justify-center">
+      <div className="w-full max-w-md p-6 bg-gray-50 rounded-lg shadow-md">
         <h2 className="text-2xl font-bold mb-6 text-center text-cyan-500">Step {step}</h2>
         {step === 1 && <Step1 />}
         {step === 2 && <Step2 />}
