@@ -22,6 +22,7 @@
     "@types/firebase": "^2.4.32",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "country-state-city": "^3.2.1",
     "dotenv": "^16.4.7",
     "firebase": "^11.6.0",
     "lucide-react": "^0.487.0",

@@ -15,6 +15,8 @@ interface ProfileState {
       country: string;
       livesWithFamily?: string;
       familyCity?: string;
+      familyCountry?: string;
+      family?: string;
       maritalStatus?: string;
       diet?: string;
       height?: string;
