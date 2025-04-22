@@ -91,25 +91,29 @@ export function Step1() {
               </Select>
               <FormMessage />
             </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="dob"
-          render={({ field }) => (
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="dob"
+            render={({ field }) => (
             <FormItem>
               <FormLabel>Date of Birth</FormLabel>
-              <FormControl>
-                <Input type="date" {...field} />
-              </FormControl>
+                <FormControl>
+                <Input
+                  type="date"
+                  {...field}
+                  className="w-fit"
+                />
+                </FormControl>
               <FormMessage />
             </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="religion"
-          render={({ field }) => (
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="religion"
+            render={({ field }) => (
             <FormItem>
               <FormLabel>Religion</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>

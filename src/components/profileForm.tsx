@@ -5,7 +5,7 @@ import ParentLayout from "./layout";
 function ProfileForm({ onProfileCreated }: { onProfileCreated: () => void }) {
   return (
     <ParentLayout>
-      <h2 className="text-2xl font-bold mb-6 py-5 text-center">Let's create your profile</h2>
+      <h2 className="text-2xl font-bold py-5 text-center">Let's create your profile</h2>
       <MultiStepForm onProfileCreated={onProfileCreated} />
     </ParentLayout>
   );
